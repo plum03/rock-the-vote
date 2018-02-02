@@ -16,10 +16,6 @@ const issueSchema = new mongoose.Schema ({
         type: Number,
         default: 0
     }
-    
-    // comments: [mongoose.Schema.Types.ObjectId]
-
-
 })
 
 module.exports = mongoose.model("Issue", issueSchema)

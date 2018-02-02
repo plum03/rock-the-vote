@@ -1,7 +1,10 @@
 # Rock the Vote - Fullstack Project
 
+## Objective
+Build a website where users can create posts on current political issues and comment on, up-vote and down-vote each post.
 
-
+Build a server and database to support website functionalities.
+ 
 
 ## Built With
 
@@ -21,8 +24,43 @@
 
 ## Code Examples
 
-
-
+### Mongoose Schema 
+```
+const issueSchema = new mongoose.Schema ({
+    name: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    upVote: {
+        type: Number,
+        default: 0
+    },
+    downVote: {
+        type: Number,
+        default: 0
+    }
+})
+```
+### Express Routes
+```
+commentsRouter
+    .route("/:issueId")
+    .get((req, res) => {
+        Comment.find({
+            issueId: req.params.issueId
+        }, (err, foundComments) => {
+            if (err) {
+                console.error(err)
+            } else {
+                res.send(foundComments)
+            }
+        })
+    })
+```
 ## Features for Future Versions
 
 [1] User Authentication
