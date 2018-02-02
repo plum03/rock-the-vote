@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const config = require('./config')
 // const cors = require('cors') -> added proxy to client/package.json
-const votesRouter = require('./routes/votes.js')
+const issuesRouter = require('./routes/issues.js')
 const commentSchema = require('./routes/comments')
 
 const app = express()
@@ -13,7 +13,7 @@ app.use(bodyParser.json())
 // app.use(cors())
 
 // Routes
-app.use("/votes", votesRouter)
+app.use("/issues", issuesRouter)
 app.use("/comments", commentSchema)
 
 

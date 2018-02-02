@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const commentSchema = new Schema ({
     issueId: {
         type: Schema.Types.ObjectId,
-        ref: "Vote"
+        ref: "Issue"
     },
     text: String
 })
