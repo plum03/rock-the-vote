@@ -17,7 +17,7 @@ issuesRouter.route("/")
 
 // add new issue
     .post((req, res) => {
-    let newIssuee = new Issue(req.body)
+    let newIssue = new Issue(req.body)
     newIssue.save((err, savedIssue) => {
         if (err) {
             console.error(err);
