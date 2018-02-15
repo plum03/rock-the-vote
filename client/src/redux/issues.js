@@ -1,15 +1,17 @@
 import axios from "axios"
-const url = "http://localhost:5050/issues/"
+const url = "/issues/"
 
 
-export function loadIssues() {
+export function getIssues() {
+    console.log("getting issues")
     return (dispatch) => {
         axios
         .get(url)
         .then((response) => {
+            console.log(response.data)
             dispatch({
-                type: "LOAD_ISSUES",
-                issues: response.data
+                type: "GET_ISSUES",
+                issue: response.data
             })
         })
         .catch((err) => {
@@ -18,14 +20,16 @@ export function loadIssues() {
     }
 }
 
-export function addIssue(issueToAdd) {
+export function addIssue(newIssue) {
     return (dispatch) => {
         axios
-        .post(url, issueToAdd)
+        .post(url, newIssue)
         .then((response) => {
+            console.log(response)
+            let {data} = response
             dispatch({
                 type: "ADD_ISSUE",
-                newIssue: response.data
+                data
             })
         })
         .catch((err) => {
@@ -34,15 +38,17 @@ export function addIssue(issueToAdd) {
     }
 }
 
-export function editIssue(id, editedIssue) {
+export function editIssue(editedIssue, id) {
     return (dispatch) => {
+        console.log(editedIssue)
         axios
         .put(url + id, editedIssue)
         .then((response) => {
+            console.log(response)
             dispatch({
                 type: "EDIT_ISSUE",
-                updatedIssue: response.data
-
+                editedIssue: response.data,
+                id
             })
         })
         .catch((err) => {
@@ -54,7 +60,7 @@ export function editIssue(id, editedIssue) {
 export function deleteIssue(id) {
     return (dispatch) => {
         axios
-        .delete(url + id)
+        .delete(url + id, id)
         .then((response) => {
             dispatch({
                 type: "DELETE_ISSUE",
@@ -67,67 +73,91 @@ export function deleteIssue(id) {
     }
 }
 
-export function upVote(issue) {
-    const update = {upVotes: issue.upVotes + 1}
-    return (dispatch) => {
-        axios
-        .put(url + issue._id, update)
-        .then(response => {
-            dispatch({
-                type: "UP_VOTE",
-                issue: response.data
-            })
-        })
-    }
-}
+// export function upVote(issue) {
+//     let updateVote = {upVotes: issue.upVotes + 1}
+//     return (dispatch) => {
+//         axios
+//         .put(url + issue._id, updateVote)
+//         .then(response => {
+//             dispatch({
+//                 type: "UP_VOTE",
+//                 issue: response.data
+//             })
+//         })
+//     }
+// }
 
+// export function downVote(issue) {
+//     let updateVote = {upVotes: issue.upVotes - 1}
+//     return (dispatch => {
+//         axios
+//         .put(url + issue._id, updateVote)
+//         .then((response) => {
+//             dispatch({
+//                 type: "DOWN_VOTE",
+//                 issue: response.data
+//             })
+//         })
+//     })
+// }
 
-export default function reducer(prevState = {issues: []}, action) {
+// ISSUES REDUCER
+
+export default function issuesReducer(prevState = {data: [], loading: true}, action) {
     switch(action.type) {
-        case "LOAD_ISSUES":
+        case "GET_ISSUES":
             return {
-                issues: action.issues
+                data: action.issue,
+                loading: false
             }
 
         case "ADD_ISSUE":
-            let newIssues = [...prevState.issues];
-            newIssues.push(action.newIssue);
             return {
-                issues: newIssues
+                data: [...prevState.data, action.data],
+                loading: false
             }
 
         case "EDIT_ISSUE":
-            let editedIssues = [...prevState.issues].map(issue => {
-                if (issue._id === action.updatedIssue._id) {
-                    return action.updatedIssue
-                } else {
-                    return issue
-                }
-            })
             return {
-                issues: editedIssues
+                data: prevState.data.map((issue) => {
+                    if (issue._id === action.id) {
+                        return action.editedIssue
+                    } else {
+                        return issue
+                    }
+                }),
+                loading: false
             }
-
-        case "UP_VOTE":
-            let upVoted = [...prevState.issues].map(issue => {
-                if (issue._id === action.issue._id) {
-                    return action.issue
-                } else {
-                    return issue
-                }
-            })
-            return {
-                issues: upVoted
-            }
-
 
         case "DELETE_ISSUE":
-            let issuesWithOneDeleted = [...prevState.issues].filter(issue => {
-                return issue._id !== action.id
-            })
             return {
-                issues: issuesWithOneDeleted
+                data: prevState.data.filter((issue) => {
+                    return issue._id !== action.id
+                }),
+                loading: false
             }
+
+        // case "UP_VOTE":
+        //     let upVoted = [...prevIssues.issues].map(issue => {
+        //         if (issue._id === action.issue._id) {
+        //             return action.issue
+        //         } else {
+        //             return issue
+        //         }
+        //     })
+        //     return {
+        //         issues: upVoted
+        //     }
+        
+        // case "DOWN_VOTE":
+        //     let downVoted = [...prevIssues.issues].map((issue) => {
+        //         if (issue._id === action.issue._id) {
+        //             return action.issue
+        //         } else {
+        //             return issue
+        //         }
+        //     })
+        //     return { issues: downVoted}
 
         default:
             return prevState

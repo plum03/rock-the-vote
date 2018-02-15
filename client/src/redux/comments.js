@@ -6,15 +6,18 @@ export function addComment(id, text) {
         axios
             .post(url + id + "/comments", text)
             .then((response) => {
-                dispatch({type: "ADD_COMMENT", commentedIssue: response.data})
+                dispatch({
+                    type: "ADD_COMMENT", 
+                    commentedIssue: response.data
+                })
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             })
     }
 }
 
-export default function addComment(prevState = {issues: []}, action) {
+export default function comments(prevState = {comments: []}, action) {
     switch (action.type) {
         
         case "ADD_COMMENT":

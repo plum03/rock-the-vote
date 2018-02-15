@@ -4,8 +4,7 @@ import thunk from 'redux-thunk'
 import issues from './issues'
 import comments from './comments'
 
-
-const rootReducer = combineReducers({ issues, comments })
+const rootReducer = combineReducers({issues, comments })
 
 
 export default createStore(
